@@ -1,16 +1,20 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
   - name: gcr.io/cloud-builders/docker
-    args: ["build","-t","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api:$SHORT_SHA","."]
+    args: ["build","-t","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api-sushi:$SHORT_SHA","."]
   - name: gcr.io/cloud-builders/docker
-    args: ["push","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api:$SHORT_SHA"]
+    args: ["push","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api-sushi:$SHORT_SHA"]
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
     args: [
-      "run","deploy","nest-api",
-      "--image","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api:$SHORT_SHA",
+      "run","deploy","nest-api-sushi",
+      "--image","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api-sushi:$SHORT_SHA",
       "--region","southamerica-east1",
       "--allow-unauthenticated",
       "--max-instances","1"
     ]
+
 images:
-  - "southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api:$SHORT_SHA"
+  - "southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api-sushi:$SHORT_SHA"
