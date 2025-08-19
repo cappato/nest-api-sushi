@@ -1,0 +1,16 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build","-t","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api:$SHORT_SHA","."]
+  - name: gcr.io/cloud-builders/docker
+    args: ["push","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api:$SHORT_SHA"]
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args: [
+      "run","deploy","nest-api",
+      "--image","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api:$SHORT_SHA",
+      "--region","southamerica-east1",
+      "--allow-unauthenticated",
+      "--max-instances","1"
+    ]
+images:
+  - "southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api:$SHORT_SHA"
