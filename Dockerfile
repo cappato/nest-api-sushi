@@ -1,14 +1,21 @@
-FROM node:20-alpine AS build
-WORKDIR /app
+# Imagen base con Node
+FROM node:20-alpine
+
+# Setear directorio de trabajo
+WORKDIR /usr/src/app
+
+# Copiar package.json e instalar dependencias
 COPY package*.json ./
-RUN npm ci
+RUN npm install --only=production
+
+# Copiar el resto del código
 COPY . .
+
+# Build de la app (si usás TypeScript)
 RUN npm run build
 
-FROM node:20-alpine
-WORKDIR /app
-ENV NODE_ENV=production
-COPY package*.json ./
-RUN npm ci --omit=dev
-COPY --from=build /app/dist ./dist
-CMD ["node","dist/main.js"]
+# Exponer puerto
+EXPOSE 8080
+
+# Comando de inicio
+CMD ["node", "dist/main.js"]
