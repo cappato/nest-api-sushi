@@ -14,14 +14,19 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /usr/src/app
 
+# Usuario no-root para seguridad
+RUN addgroup -g 1001 -S nodejs && adduser -S nestjs -u 1001
+
 # Solo deps de producción para imagen final
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Copiamos el build generado
 COPY --from=builder /usr/src/app/dist ./dist
 
-# (opcional) Si usás archivos estáticos/config, copiarlos aquí.
+# Cambiar ownership y usuario
+RUN chown -R nestjs:nodejs /usr/src/app
+USER nestjs
 
 ENV NODE_ENV=production
 EXPOSE 8080
