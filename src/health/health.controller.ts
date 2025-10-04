@@ -13,20 +13,14 @@ export class HealthController {
 
   @Get()
   @ApiOperation({ summary: 'Basic health check' })
-  @ApiOkResponse({
-    description: 'Service is healthy',
-    type: BasicHealthResponseDto
-  })
+  @ApiOkResponse({ description: 'Service is healthy', type: BasicHealthResponseDto })
   healthz(): BasicHealthResponseDto {
-    return { ok: true, message: 'Nest API Sushi is running' };
+    return { ok: true, message: 'API is running' };
   }
 
   @Get('db')
-  @ApiOperation({ summary: 'Database connection health check' })
-  @ApiOkResponse({
-    description: 'Database connection status',
-    type: DatabaseHealthResponseDto
-  })
+  @ApiOperation({ summary: 'Database health check' })
+  @ApiOkResponse({ description: 'Database connection status', type: DatabaseHealthResponseDto })
   async checkDatabase(): Promise<DatabaseHealthResponseDto> {
     return this.databaseService.checkHealth();
   }

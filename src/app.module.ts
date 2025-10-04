@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { HealthController } from './health/health.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
+import { PrismaModule } from './prisma/prisma.module';
 import databaseConfig from './config/database.config';
 
 @Module({
@@ -12,6 +13,7 @@ import databaseConfig from './config/database.config';
       isGlobal: true,
       load: [databaseConfig],
     }),
+    PrismaModule,
     DatabaseModule,
   ],
   controllers: [AppController, HealthController],

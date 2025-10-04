@@ -27,5 +27,3 @@ export class DatabaseHealthResponseDto extends BasicHealthResponseDto {
   @ApiProperty({ example: 'Connection failed', description: 'Error message', required: false })
   error?: string;
 }
-
-

@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('app') // agrupa endpoints en Swagger
+@ApiTags('app')
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -11,11 +11,5 @@ export class AppController {
   @ApiOkResponse({ description: 'Mensaje de bienvenida', schema: { example: 'Hello World!' } })
   getHello(): string {
     return this.appService.getHello();
-  }
-
-  @Get('health')
-  @ApiOkResponse({ description: 'Estado de la API', schema: { example: { status: 'ok' } } })
-  health() {
-    return { status: 'ok' };
   }
 }
