@@ -13,7 +13,9 @@ steps:
       "--image","southamerica-east1-docker.pkg.dev/$PROJECT_ID/api/nest-api-sushi:$SHORT_SHA",
       "--region","southamerica-east1",
       "--allow-unauthenticated",
-      "--max-instances","1"
+      "--max-instances","1",
+      "--set-env-vars","NODE_ENV=production,PORT=8080,SUPABASE_URL=https://jybxgwkoooludyriiflu.supabase.co,DB_POOL_MAX=10,DB_IDLE_TIMEOUT=30000,DB_CONNECTION_TIMEOUT=10000",
+      "--set-secrets","DATABASE_URL=DATABASE_URL:latest,SUPABASE_ANON_KEY=SUPABASE_ANON_KEY:latest,SUPABASE_SERVICE_ROLE_KEY=SUPABASE_SERVICE_ROLE_KEY:latest"
     ]
 
 images:

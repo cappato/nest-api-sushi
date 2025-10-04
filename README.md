@@ -1,99 +1,227 @@
+# 🍣 Nest API Sushi
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST moderna construida con **NestJS + TypeScript + Supabase** para gestión de productos de sushi.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Características
 
-## Description
+- ✅ **API REST** con NestJS 11 y TypeScript
+- ✅ **Supabase PostgreSQL** como base de datos
+- ✅ **Documentación Swagger** interactiva en `/docs`
+- ✅ **Health checks** para API y base de datos
+- ✅ **KISS Architecture** - Keep It Simple, Stupid
+- ✅ **Tests** unitarios y e2e configurados
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Endpoints Disponibles
 
-## Project setup
+- `GET /` - Mensaje de bienvenida
+- `GET /health` - Health check básico de la API
+- `GET /health/db` - Verificación de conexión a Supabase
+- `GET /docs` - Documentación Swagger interactiva
 
-```bash
-$ npm install
-```
+## 🛠️ Stack Tecnológico
 
-## Compile and run the project
+- **Backend**: NestJS 11.x + TypeScript 5.x
+- **Base de datos**: Supabase (PostgreSQL 15)
+- **Testing**: Jest
+- **Documentación**: Swagger/OpenAPI
+- **ORM**: pg (node-postgres) - Connection pooling nativo
 
-```bash
-# development
-$ npm run start
+## 🚀 Inicio Rápido
 
-# watch mode
-$ npm run start:dev
+### Prerrequisitos
 
-# production mode
-$ npm run start:prod
-```
+- Node.js 20+
+- Cuenta de Supabase (gratis en [supabase.com](https://supabase.com))
 
-## Run tests
+### 1. Configurar Supabase
+
+1. Crea un proyecto en [Supabase Dashboard](https://supabase.com/dashboard)
+2. Ve a **Settings → Database** y copia la **Connection string** (Pooler)
+3. Ve a **Settings → API** y copia las **API Keys**
+
+### 2. Configurar el proyecto
 
 ```bash
-# unit tests
-$ npm run test
+# Instalar dependencias
+npm install
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Copiar y configurar variables de entorno
+cp .env.example .env
+# Edita .env con tus credenciales de Supabase
 ```
 
-## Deployment
+### 3. Crear las tablas en Supabase
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Ve al **SQL Editor** en Supabase y ejecuta:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```sql
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(200) NOT NULL,
+  description TEXT,
+  price DECIMAL(10, 2) NOT NULL,
+  category_id INTEGER REFERENCES categories(id),
+  image_url VARCHAR(500),
+  is_available BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO categories (name, description) VALUES
+  ('Rolls', 'Rollos de sushi tradicionales y especiales'),
+  ('Nigiri', 'Sushi nigiri con pescado fresco'),
+  ('Sashimi', 'Cortes de pescado fresco'),
+  ('Bebidas', 'Bebidas y refrescos');
+```
+
+### 4. Ejecutar la API
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Modo desarrollo
+npm run start:dev
+
+# Modo producción
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 5. Verificar funcionamiento
 
-## Resources
+```bash
+# Health check básico
+curl http://localhost:8080/health
 
-Check out a few resources that may come in handy when working with NestJS:
+# Verificar conexión a Supabase
+curl http://localhost:8080/health/db
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+**URLs disponibles:**
+- API: http://localhost:8080
+- Swagger Docs: http://localhost:8080/docs
+- Supabase Dashboard: https://supabase.com/dashboard
 
-## Support
+## 🧪 Testing
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Tests unitarios
+npm run test
 
-## Stay in touch
+# Tests e2e
+npm run test:e2e
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Coverage
+npm run test:cov
+```
 
-## License
+## 📊 Base de Datos
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-//touch
+### Estructura
+
+Tablas principales:
+
+- **categories**: Categorías de productos (Rolls, Nigiri, Sashimi, Bebidas)
+- **products**: Catálogo de productos de sushi
+
+### Gestión de la Base de Datos
+
+Usa el **Supabase Dashboard** para:
+- Ver y editar datos en **Table Editor**
+- Ejecutar queries en **SQL Editor**
+- Ver logs en **Database → Logs**
+- Gestionar backups en **Database → Backups**
+
+## 🔧 Variables de Entorno
+
+Archivo `.env`:
+
+```env
+# Application
+NODE_ENV=production
+PORT=8080
+
+# Supabase Database (Pooler Connection)
+DATABASE_URL=postgresql://postgres.YOUR_PROJECT:YOUR_PASSWORD@aws-1-sa-east-1.pooler.supabase.com:6543/postgres
+
+# Database Pool
+DB_POOL_MAX=10
+DB_IDLE_TIMEOUT=30000
+DB_CONNECTION_TIMEOUT=10000
+
+# Supabase API Keys
+SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+## 📝 Estructura del Proyecto (KISS)
+
+```
+nest-api-sushi/
+├── src/
+│   ├── config/
+│   │   └── database.config.ts      # Configuración de Supabase
+│   ├── database/
+│   │   ├── database.module.ts      # Módulo de base de datos
+│   │   └── database.service.ts     # Servicio de conexión
+│   ├── health/
+│   │   ├── dto/                    # DTOs para respuestas
+│   │   └── health.controller.ts    # Health checks
+│   ├── app.module.ts               # Módulo principal
+│   ├── app.controller.ts           # Controlador raíz
+│   ├── app.service.ts              # Servicio raíz
+│   └── main.ts                     # Entry point
+├── scripts/
+│   ├── quick-test.js               # Test de conexión rápido
+│   └── test-supabase-connection.js # Test detallado
+├── .env                            # Variables de entorno
+├── .env.example                    # Template de configuración
+└── package.json
+```
+
+## ✨ Principios KISS Aplicados
+
+### 🎯 **Keep It Simple, Stupid**
+- ✅ Sin Docker - Conexión directa a Supabase
+- ✅ Sin ORM pesado - pg nativo con connection pooling
+- ✅ Configuración mínima - Solo lo necesario
+- ✅ Arquitectura clara - Módulos bien definidos
+
+### 🔧 **Clean Architecture**
+- **DatabaseService**: Maneja conexión y health checks
+- **HealthController**: Expone endpoints HTTP simples
+- **ConfigService**: Configuración centralizada
+- **DTOs tipados**: Respuestas consistentes con Swagger
+
+### 📦 **Dependencias Mínimas**
+```json
+{
+  "@nestjs/common": "^11.0.1",
+  "@nestjs/config": "^4.0.2",
+  "@nestjs/core": "^11.0.1",
+  "@nestjs/swagger": "11.2.0",
+  "pg": "^8.16.3"
+}
+```
+
+## 🚀 Próximos Pasos
+
+1. **Crear módulos de productos y categorías**
+2. **Agregar autenticación con Supabase Auth**
+3. **Implementar CRUD completo**
+4. **Conectar con el frontend Astro**
+
+## 📄 Licencia
+
+MIT

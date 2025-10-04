@@ -17,7 +17,7 @@
     "strictBindCallApply": false,
     "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "types": ["node"]                  // <-- CLAVE: SOLO node
+    "types": ["node", "jest"]          // <-- Incluir jest para tests
   },
   "include": ["src/**/*.ts"]
 }
