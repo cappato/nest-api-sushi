@@ -190,10 +190,15 @@ export class MenuService {
       ],
     });
 
+    // Filtrar productos excluidos por nombre
+    const filteredProducts = products.filter(
+      product => !MENU_CONFIG.EXCLUDED_PRODUCTS.includes(product.name)
+    );
+
     // Agrupar por categoría y nombre base
     const groupedByCategory: Record<string, Record<string, ProductGroupDto>> = {};
 
-    for (const product of products) {
+    for (const product of filteredProducts) {
       const categoryName = product.category?.name || 'Sin categoría';
 
       // Normalizar el nombre del producto primero
@@ -256,10 +261,13 @@ export class MenuService {
     const categories: GroupedCategoryDto[] = Object.entries(groupedByCategory).map(([categoryName, groups]) => {
       const groupsArray = Object.values(groups);
 
-      // Ordenar variantes dentro de cada grupo
+      // Ordenar variantes dentro de cada grupo por cantidad de piezas
       groupsArray.forEach(group => {
         group.variants.sort((a, b) => a.pieces - b.pieces);
       });
+
+      // Ordenar grupos alfabéticamente por baseName
+      groupsArray.sort((a, b) => a.baseName.localeCompare(b.baseName, 'es', { numeric: true }));
 
       return {
         name: categoryName,

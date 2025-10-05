@@ -20,6 +20,14 @@ export const MENU_CONFIG = {
   ],
 
   /**
+   * Productos específicos que no deben mostrarse en el menú público
+   * Se excluyen por nombre exacto
+   */
+  EXCLUDED_PRODUCTS: [
+    'REBOZA TU BURGER FV',
+  ],
+
+  /**
    * Categorías que deben aparecer al final del menú
    */
   CATEGORIES_AT_END: ['Ensaladas', 'Platos Calientes', 'Bebidas', 'Adicionales', 'Salsas'],
