@@ -6,8 +6,13 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci
 
-# Copiamos el código y construimos
+# Copiamos el código (incluye prisma schema)
 COPY . .
+
+# Generamos el cliente de Prisma antes de compilar
+RUN npx prisma generate
+
+# Construimos la aplicación
 RUN npm run build
 
 # ---------- runner ----------
@@ -20,6 +25,10 @@ RUN addgroup -g 1001 -S nodejs && adduser -S nestjs -u 1001
 # Solo deps de producción para imagen final
 COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
+
+# Copiamos el schema de Prisma y generamos el cliente
+COPY prisma ./prisma
+RUN npx prisma generate
 
 # Copiamos el build generado
 COPY --from=builder /usr/src/app/dist ./dist
