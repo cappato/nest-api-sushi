@@ -5,6 +5,8 @@ import { HealthController } from './health/health.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { ImportModule } from './import/import.module';
+import { MenuModule } from './menu/menu.module';
 import databaseConfig from './config/database.config';
 
 @Module({
@@ -15,6 +17,8 @@ import databaseConfig from './config/database.config';
     }),
     PrismaModule,
     DatabaseModule,
+    ImportModule,
+    MenuModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],
