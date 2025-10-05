@@ -18,7 +18,13 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prisma:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:dev": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:test": "tsx scripts/test-db-connection.ts",
+    "import:fudo": "tsx scripts/run-import.ts ./src/config/importar-productos.xlsx"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -31,7 +37,8 @@
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "swagger-ui-express": "5.0.1"
+    "swagger-ui-express": "5.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -41,7 +48,7 @@
     "@nestjs/testing": "^11.0.1",
     "@types/express": "^4.17.23",
     "@types/jest": "^30.0.0",
-    "@types/node": "^22.17.2",
+    "@types/node": "^22.18.8",
     "@types/supertest": "^6.0.3",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
@@ -56,6 +63,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.20.0"
   },
