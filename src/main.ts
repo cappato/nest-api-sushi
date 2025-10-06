@@ -5,8 +5,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Get the underlying Express instance
+  const expressApp = app.getHttpAdapter().getInstance();
+
   // Disable ETag to prevent caching based on entity tags
-  app.disable('etag');
+  expressApp.disable('etag');
 
   // Add no-cache headers to prevent any caching
   app.use((req, res, next) => {
