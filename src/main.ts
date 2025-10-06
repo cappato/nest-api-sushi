@@ -5,6 +5,17 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Disable ETag to prevent caching based on entity tags
+  app.disable('etag');
+
+  // Add no-cache headers to prevent any caching
+  app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+  });
+
   // Opcional: CORS si habrá front externo
   app.enableCors();
 
