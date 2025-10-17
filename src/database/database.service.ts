@@ -1,15 +1,17 @@
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AppLogger } from '../common/logger/logger.service';
+
 import { Pool } from 'pg';
 import { DatabaseConfig } from '../config/database.config';
 import { DatabaseHealthResponseDto } from '../health/dto/health-response.dto';
 
 @Injectable()
 export class DatabaseService implements OnModuleDestroy {
-  private readonly logger = new Logger(DatabaseService.name);
+
   private pool: Pool;
 
-  constructor(private configService: ConfigService) {
+  constructor(private configService: ConfigService, private readonly logger: AppLogger) {
     this.initializePool();
   }
 
