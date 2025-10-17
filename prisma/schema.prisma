@@ -19,6 +19,27 @@ enum PriceLogic {
   MAX
 }
 
+enum DeliveryType {
+  RETIRO
+  ENVIO
+}
+
+enum PaymentMethod {
+  EFECTIVO
+  MERCADO_PAGO
+  TRANSFERENCIA
+  TARJETA_CREDITO
+  TARJETA_DEBITO
+}
+
+enum OrderStatus {
+  PENDIENTE
+  PAGADO
+  EN_PREPARACION
+  ENTREGADO
+  CANCELADO
+}
+
 model Provider {
   id          Int          @id @default(autoincrement())
   name        String       @unique
@@ -69,8 +90,9 @@ model Product {
   modifierItems  ModifierGroupItem[]
   modifierGroups ProductModifierGroup[]
 
-  bom   ProductIngredient[]
-  image ProductImage?
+  bom        ProductIngredient[]
+  image      ProductImage?
+  orderItems OrderItem[]
 
   @@unique([externalSource, externalId])
   createdAt DateTime @default(now())
@@ -153,4 +175,76 @@ model ProductImage {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  fullName  String
+  email     String?  @unique
+  phone     String?
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([phone])
+}
+
+model Zone {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  polygon     Json     // [[lat,lng], ...]
+  deliveryFee Int
+  active      Boolean  @default(true)
+  priority    Int      @default(0)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orders      Order[]
+
+  @@index([active])
+  @@index([priority])
+}
+
+model Order {
+  id            Int           @id @default(autoincrement())
+  userId        Int?
+  user          User?         @relation(fields: [userId], references: [id])
+  deliveryType  DeliveryType
+  address       Json?
+  comments      String?
+  paymentMethod PaymentMethod
+  status        OrderStatus   @default(PENDIENTE)
+  totalAmount   Decimal       @default(0) @db.Decimal(14, 2)
+  shippingFee   Int           @default(0)
+  zoneId        Int?
+  zone          Zone?         @relation(fields: [zoneId], references: [id], onDelete: SetNull)
+  lat           Float?
+  lng           Float?
+  items         OrderItem[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([zoneId])
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  orderId    Int
+  productId  Int?
+  product    Product? @relation(fields: [productId], references: [id])
+  name       String
+  quantity   Int
+  unitPrice  Decimal @db.Decimal(14, 2)
+  totalPrice Decimal @db.Decimal(14, 2)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([name])
 }
