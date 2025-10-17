@@ -1,9 +1,29 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Trust proxy for real IP behind reverse proxy (Cloud Run, nginx, etc.)
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
+  // Global prefix for all routes
+  app.setGlobalPrefix('api');
+
+  // Global exception filters
+  app.useGlobalFilters(new PrismaExceptionFilter());
+
+  // Global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   // Get the underlying Express instance
   const expressApp = app.getHttpAdapter().getInstance();
@@ -19,8 +39,17 @@ async function bootstrap() {
     next();
   });
 
-  // Opcional: CORS si habrá front externo
-  app.enableCors();
+  // CORS configuration - Allow frontend and admin panel
+  const frontendUrls = (process.env.FRONTEND_URL || 'http://localhost:4321')
+    .split(',')
+    .map(url => url.trim());
+
+  app.enableCors({
+    origin: frontendUrls,
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
+  });
 
   // Swagger
   const config = new DocumentBuilder()
@@ -28,6 +57,7 @@ async function bootstrap() {
     .setDescription('API docs')
     .setVersion('1.0')
     .addBearerAuth()
+    .addApiKey({ type: 'apiKey', in: 'header', name: 'x-api-key' }, 'api-key')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
