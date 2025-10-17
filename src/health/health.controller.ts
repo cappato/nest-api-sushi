@@ -6,8 +6,8 @@ import {
   DatabaseHealthResponseDto
 } from './dto/health-response.dto';
 
-@ApiTags('health')
-@Controller('health')
+@ApiTags('Public Health')
+@Controller('public/health')
 export class HealthController {
   constructor(private readonly databaseService: DatabaseService) {}
 

@@ -4,8 +4,8 @@ import { MenuService } from './menu.service';
 import { MenuCategoryDto } from './dto/menu-response.dto';
 import { GroupedMenuResponseDto } from './dto/grouped-menu-response.dto';
 
-@ApiTags('menu')
-@Controller('menu')
+@ApiTags('Public Menu')
+@Controller('public/menu')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
