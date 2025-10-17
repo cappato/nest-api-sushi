@@ -1,0 +1,182 @@
+### Variables
+@baseUrl = http://localhost:8080/api
+@publicUrl = {{baseUrl}}/public
+@adminUrl = {{baseUrl}}/admin
+@orderId = 1
+@userId = 1
+
+### Health Check
+GET {{publicUrl}}/health
+
+### 1. Crear pedido con RETIRO (válido)
+POST {{publicUrl}}/orders
+Content-Type: application/json
+
+{
+  "fullName": "Juan Pérez",
+  "email": "juan@example.com",
+  "phone": "+5491123456789",
+  "deliveryType": "RETIRO",
+  "comments": "Sin wasabi por favor",
+  "paymentMethod": "EFECTIVO",
+  "items": [
+    {
+      "productId": 10,
+      "name": "California Roll",
+      "quantity": 2,
+      "unitPrice": 1500,
+      "totalPrice": 3000
+    }
+  ]
+}
+
+### 2. Crear pedido con ENVIO (válido)
+POST {{publicUrl}}/orders
+Content-Type: application/json
+
+{
+  "fullName": "María González",
+  "email": "maria@example.com",
+  "phone": "+5491198765432",
+  "deliveryType": "ENVIO",
+  "address": {
+    "street": "Av. Corrientes 1234",
+    "floor": "5to B",
+    "city": "CABA",
+    "province": "Buenos Aires"
+  },
+  "comments": "Timbre roto, llamar por teléfono",
+  "paymentMethod": "MERCADO_PAGO",
+  "items": [
+    {
+      "productId": 15,
+      "name": "Philadelphia Roll",
+      "quantity": 1,
+      "unitPrice": 1800,
+      "totalPrice": 1800
+    },
+    {
+      "productId": 20,
+      "name": "Salmon Nigiri",
+      "quantity": 3,
+      "unitPrice": 800,
+      "totalPrice": 2400
+    }
+  ]
+}
+
+### 3. Crear pedido sin items (debe fallar)
+POST {{publicUrl}}/orders
+Content-Type: application/json
+
+{
+  "fullName": "Test User",
+  "email": "test@example.com",
+  "deliveryType": "RETIRO",
+  "paymentMethod": "EFECTIVO",
+  "items": []
+}
+
+### 4. Crear pedido con ENVIO sin dirección (debe fallar)
+POST {{publicUrl}}/orders
+Content-Type: application/json
+
+{
+  "fullName": "Test User",
+  "email": "test2@example.com",
+  "deliveryType": "ENVIO",
+  "paymentMethod": "EFECTIVO",
+  "items": [
+    {
+      "name": "California Roll",
+      "quantity": 1,
+      "unitPrice": 1500,
+      "totalPrice": 1500
+    }
+  ]
+}
+
+### 5. Crear pedido sin contacto (debe fallar)
+POST {{publicUrl}}/orders
+Content-Type: application/json
+
+{
+  "fullName": "Test User",
+  "deliveryType": "RETIRO",
+  "paymentMethod": "EFECTIVO",
+  "items": [
+    {
+      "name": "California Roll",
+      "quantity": 1,
+      "unitPrice": 1500,
+      "totalPrice": 1500
+    }
+  ]
+}
+
+### 6. Repetir email (debe reusar usuario)
+POST {{publicUrl}}/orders
+Content-Type: application/json
+
+{
+  "fullName": "Juan Pérez Actualizado",
+  "email": "juan@example.com",
+  "phone": "+5491123456789",
+  "deliveryType": "RETIRO",
+  "paymentMethod": "TRANSFERENCIA",
+  "items": [
+    {
+      "productId": 25,
+      "name": "Tuna Roll",
+      "quantity": 1,
+      "unitPrice": 2000,
+      "totalPrice": 2000
+    }
+  ]
+}
+
+### 7. Listar todos los pedidos (ADMIN)
+GET {{adminUrl}}/orders
+# x-api-key: your-api-key-here
+
+### 8. Listar pedidos PENDIENTES (ADMIN)
+GET {{adminUrl}}/orders?status=PENDIENTE
+# x-api-key: your-api-key-here
+
+### 9. Obtener pedido específico (ADMIN)
+GET {{adminUrl}}/orders/{{orderId}}
+# x-api-key: your-api-key-here
+
+### 10. Obtener pedidos de un usuario (PUBLIC)
+GET {{publicUrl}}/orders/user/{{userId}}
+
+### 11. Actualizar estado a EN_PREPARACION (ADMIN)
+PATCH {{adminUrl}}/orders/{{orderId}}/status
+# x-api-key: your-api-key-here
+Content-Type: application/json
+
+{
+  "status": "EN_PREPARACION"
+}
+
+### 12. Actualizar estado a ENTREGADO (ADMIN)
+PATCH {{adminUrl}}/orders/{{orderId}}/status
+# x-api-key: your-api-key-here
+Content-Type: application/json
+
+{
+  "status": "ENTREGADO"
+}
+
+### 13. Actualizar estado a CANCELADO (ADMIN)
+PATCH {{adminUrl}}/orders/{{orderId}}/status
+# x-api-key: your-api-key-here
+Content-Type: application/json
+
+{
+  "status": "CANCELADO"
+}
+
+### 14. Ver menú (PUBLIC)
+GET {{publicUrl}}/menu
+
