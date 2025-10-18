@@ -40,12 +40,14 @@ async function bootstrap() {
   });
 
   // CORS configuration - Allow frontend and admin panel
-  const frontendUrls = (process.env.FRONTEND_URL || 'http://localhost:4321')
+  const frontendUrls = (process.env.FRONTEND_URL || 'http://localhost:4321,https://estilosushi.com')
     .split(',')
     .map(url => url.trim());
 
+  const corsOrigins: (string | RegExp)[] = [...frontendUrls, /\.pages\.dev$/];
+
   app.enableCors({
-    origin: frontendUrls,
+    origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
